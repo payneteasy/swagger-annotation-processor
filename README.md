@@ -5,7 +5,7 @@ Library for swagger REST services compile time generation.
 ## Usage
 
 1. Add maven dependency:
-    ```
+    ```xml
     <dependency>
       <groupId>com.payneteasy.swagger.apt</groupId>
       <artifactId>apt</artifactId>
@@ -13,7 +13,7 @@ Library for swagger REST services compile time generation.
     </dependency>
     ```
 2. Turn on annotation processor:
-    ```
+    ```xml
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
@@ -27,7 +27,7 @@ Library for swagger REST services compile time generation.
     ```
 3. Mark service interface methods you want to export to Swagger with `@ExportToSwagger` annotation.  
     Note that only services with interfaces are supported currently.
-    ```
+    ```java
     public interface IService {
         @ExportToSwagger
         int doSomething(String str);
@@ -44,7 +44,7 @@ Library for swagger REST services compile time generation.
 
 ## Build
 
-```
+```shell script
 ./build.sh
 ```
 
