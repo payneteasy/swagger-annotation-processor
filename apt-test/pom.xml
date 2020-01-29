@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.payneteasy.swagger.apt</groupId>
+  <artifactId>apt-test</artifactId>
+  <version>1.0.0.1-SNAPSHOT</version>
+
+  <name>.apt-test ${project.version}</name>
+  <description>
+    Java Annotation Processors for swagger - tests. Tests are in separate module because annotation processor should be compiled
+    before its use. By the way google @AutoService causes frequent problems with IDEA compilation.
+  </description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.install.skip>true</maven.install.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.payneteasy.swagger.apt</groupId>
+      <artifactId>apt</artifactId>
+      <version>1.0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>com.google.testing.compile</groupId>
+      <artifactId>compile-testing</artifactId>
+      <version>0.18</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>src/test/java</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <annotationProcessors>
+            <annotationProcessor>com.payneteasy.swagger.apt.ServicesExportSwaggerProcessor</annotationProcessor>
+          </annotationProcessors>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <skipIfEmpty>true</skipIfEmpty>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.6</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
