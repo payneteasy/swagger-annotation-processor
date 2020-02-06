@@ -6,7 +6,7 @@ import com.payneteasy.swagger.apt.gen.ServiceInvoker;
 import com.payneteasy.swagger.apt.gen.ServiceMethodId;
 import com.payneteasy.swagger.apt.gen.ServiceMethodInfo;
 import com.payneteasy.swagger.apt.gen.ServiceUriUtil;
-import com.payneteasy.swagger.apt.gen.SwaggerGenerator;
+import com.payneteasy.swagger.apt.gen.Swagger302Generator;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,6 @@ public class RemoteApiController {
      * </ul>
      */
     private final Map<String, ServiceInfo> services;
-    private final SwaggerGenerator         generator;
     private final ServiceInvoker           serviceInvoker;
 
     @Autowired
@@ -49,7 +48,6 @@ public class RemoteApiController {
     RemoteApiController(BeanFactory context, String basePackage) throws ClassNotFoundException {
         services       = ServiceInfoSearcher.searchServices(context, basePackage);
         serviceInvoker = new ServiceInvoker(services, ArgumentsParseStrategy.MIXED);
-        generator      = new SwaggerGenerator("demo services", "1.0", "/demo/api", ArgumentsParseStrategy.MIXED);
         LOG.info("Exported {} service. See /demo/api/doc/", services.size());
     }
 
@@ -60,8 +58,11 @@ public class RemoteApiController {
         //request to http://localhost/demo/.. (nginx -> demo):
         //server port: 80
         //local port:  8080
+        final Swagger302Generator generator = new Swagger302Generator(
+                "demo services", "demo services description", "1.0", "/demo/api"
+        );
         response.getWriter().println(
-                generator.generateJson(services.values(), url.getProtocol(), url.getHost(), request.getServerPort())
+                generator.generateJson(services.values()/*, url.getProtocol(), url.getHost(), request.getServerPort()*/)
         );
         return null;
     }
@@ -73,7 +74,8 @@ public class RemoteApiController {
             final String encoding =
                     (request.getCharacterEncoding() != null) ? request.getCharacterEncoding() : StandardCharsets.UTF_8.name();
             final String argumentsJson = IOUtils.toString(request.getInputStream(), encoding);
-            final String result        = serviceInvoker.invokeServiceMethod(serviceMethodId, argumentsJson);
+            System.out.println("argumentsJson = " + argumentsJson);
+            final String result = serviceInvoker.invokeServiceMethod(serviceMethodId, argumentsJson);
             response.setContentType("application/json; charset=UTF-8");
             response.getWriter().println(result);
         } catch (Exception e) {

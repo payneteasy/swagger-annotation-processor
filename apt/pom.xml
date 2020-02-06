@@ -42,6 +42,11 @@
       <artifactId>mbknor-jackson-jsonschema_2.12</artifactId>
       <version>1.0.36</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.victools</groupId>
+      <artifactId>jsonschema-generator</artifactId>
+      <version>4.0.2</version>
+    </dependency>
 
     <!-- Utils -->
     <dependency>

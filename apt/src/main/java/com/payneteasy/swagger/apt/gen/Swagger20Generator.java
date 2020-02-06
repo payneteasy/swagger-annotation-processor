@@ -28,9 +28,12 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
- * Json specification: https://swagger.io/specification/v2/.
+ * Swagger 2.0 (OpenAPI 2.0).<br/>
+ * Swagger 2.0 json specification: https://swagger.io/specification/v2/.
  */
-public class SwaggerGenerator {
+public class Swagger20Generator {
+
+    private static final String OPENAPI_VERSION = "2.0";
 
     private final String                 title;
     private final String                 version;
@@ -40,7 +43,7 @@ public class SwaggerGenerator {
     private final ObjectMapper        objectMapper = new ObjectMapper();
     private final JsonSchemaGenerator jsonSchemaGenerator;
 
-    public SwaggerGenerator(String title, String version, String basePath, ArgumentsParseStrategy argumentsParseStrategy) {
+    public Swagger20Generator(String title, String version, String basePath, ArgumentsParseStrategy argumentsParseStrategy) {
         this.title                  = title;
         this.version                = version;
         this.basePath               = basePath;
@@ -243,7 +246,7 @@ public class SwaggerGenerator {
         } else if (type instanceof ParameterizedType) {
             final ParameterizedType parameterizedType = (ParameterizedType) type;
             final String parameters = Arrays.stream(parameterizedType.getActualTypeArguments()).
-                    map(SwaggerGenerator::getTypeSimpleName).
+                    map(Swagger20Generator::getTypeSimpleName).
                     collect(Collectors.joining(","));
             return getTypeSimpleName(parameterizedType.getRawType()) + "<" + parameters + ">";
         } else {
@@ -268,7 +271,7 @@ public class SwaggerGenerator {
     }
 
     private void createHeader(String protocol, String host, int port, ObjectNode rootNode) {
-        rootNode.put("swagger", "2.0");
+        rootNode.put("swagger", OPENAPI_VERSION);
 
         ObjectNode info = rootNode.putObject("info");
         info.put("title", title);
