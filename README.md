@@ -11,6 +11,12 @@ Library for swagger REST services compile time generation.
       <artifactId>apt</artifactId>
       <version>1.0.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javapoet</artifactId>
+      <version>1.12.1</version>
+      <scope>provided</scope>
+    </dependency>
     ```
 2. Turn on annotation processor:
     ```xml

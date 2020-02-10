@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
@@ -54,16 +53,11 @@ public class RemoteApiController {
     @RequestMapping({"/swagger-ui/demo.json"})
     public ModelAndView paynetUiJson(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
-        URL url = new URL(request.getRequestURL().toString());
-        //request to http://localhost/demo/.. (nginx -> demo):
-        //server port: 80
-        //local port:  8080
         final Swagger302Generator generator = new Swagger302Generator(
-                "demo services", "demo services description", "1.0", "/demo/api"
+                "demo services", "demo services description", "1.0", ArgumentsParseStrategy.MIXED
         );
-        response.getWriter().println(
-                generator.generateJson(services.values()/*, url.getProtocol(), url.getHost(), request.getServerPort()*/)
-        );
+        generator.addServer("/demo/api", "Local demo server");
+        response.getWriter().println(generator.generateJson(services.values()));
         return null;
     }
 

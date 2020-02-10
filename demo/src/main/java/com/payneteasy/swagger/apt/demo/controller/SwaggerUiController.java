@@ -46,9 +46,9 @@ public class SwaggerUiController {
             aResponse.setContentType("plain/text");
         }
 
-        String html = IOUtils.toString(in, StandardCharsets.UTF_8.name());
+        String html = IOUtils.toString(in, StandardCharsets.UTF_8);
 
-        IOUtils.write(html, aResponse.getOutputStream());
+        IOUtils.write(html, aResponse.getOutputStream(), StandardCharsets.UTF_8);
         return null;
     }
 

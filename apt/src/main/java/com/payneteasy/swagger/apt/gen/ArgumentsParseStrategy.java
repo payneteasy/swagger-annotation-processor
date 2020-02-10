@@ -9,39 +9,107 @@ public enum ArgumentsParseStrategy {
      * <pre>{@code
      * 1
      * }</pre>
+     *
+     * Single string argument:
+     * <pre>{@code
+     * "some text"
+     * }</pre>
+     *
      * Single complex argument:
      * <pre>{@code
      * {
      *   "status": 0,
-     *   "text": "string"
+     *   "text": "some text"
      * }
      * }</pre>
+     *
      * Multiple arguments:
      * <pre>{@code
      * {
-     *   "aModel4": {
+     *   "anInt": 0,
+     *   "aString": "some text",
+     *   "aModel": {
      *     "status": 0,
-     *     "text": "string"
-     *   },
-     *   "aString4": "string"
+     *     "text": "some text"
+     *   }
      * }
      * }</pre>
      */
     MIXED,
     /**
      * Single int argument:
+     * <pre>{@code
+     * {
+     *   "anInt": 0
+     * }
+     * }</pre>
+     *
+     * Single string argument:
+     * <pre>{@code
+     * {
+     *   "aString": "some text"
+     * }
+     * }</pre>
+     *
+     * Single complex argument:
+     * <pre>{@code
+     * {
+     *   "aModel": {
+     *     "status": 0,
+     *     "text": "some text"
+     *   }
+     * }
+     * }</pre>
      *
      * Multiple arguments:
      * <pre>{@code
      * {
-     *   "aModel4": {
+     *   "anInt": 0,
+     *   "aString": "some text"
+     *   "aModel": {
      *     "status": 0,
-     *     "text": "string"
-     *   },
-     *   "aString4": "string"
+     *     "text": "some text"
+     *   }
      * }
      * }</pre>
      */
     MAP,
+    /**
+     * Single int argument:
+     * <pre>{@code
+     * [
+     *   0
+     * ]
+     * }</pre>
+     *
+     * Single string argument:
+     * <pre>{@code
+     * [
+     *   "some text"
+     * ]
+     * }</pre>
+     *
+     * Single complex argument:
+     * <pre>{@code
+     * [
+     *   {
+     *     "status": 0,
+     *     "text": "some text"
+     *   }
+     * ]
+     * }</pre>
+     *
+     * Multiple arguments:
+     * <pre>{@code
+     * [
+     *   0,
+     *   "string",
+     *   {
+     *     "status": 0,
+     *     "text": "some text"
+     *   }
+     * ]
+     * }</pre>
+     */
     ARRAY
 }

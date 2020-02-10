@@ -25,6 +25,12 @@
       <artifactId>apt</artifactId>
       <version>1.0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javapoet</artifactId>
+      <version>1.12.1</version>
+      <scope>provided</scope>
+    </dependency>
 
     <!--Server-->
     <dependency>

@@ -117,12 +117,16 @@ public class Swagger302Generator {
 
     private static final String OPENAPI_VERSION = "3.0.2";
 
-    private final String title;
-    private final String description;
-    private final String version;
-    private final String basePath;
+    /** Swagger services page: title. */
+    private final String           title;
+    /** Swagger services page: description. */
+    private final String           description;
+    /** Swagger services page: version. */
+    private final String           version;
+    /** Servers to try services. */
+    private final List<ServerInfo> serverInfos = new ArrayList<>();
 
-    private final ArgumentsParseStrategy argumentsParseStrategy = ArgumentsParseStrategy.MIXED;
+    private final ArgumentsParseStrategy argumentsParseStrategy;
 
     private final ObjectMapper    objectMapper        = new ObjectMapper();
     private final SchemaGenerator jsonSchemaGenerator = new SchemaGenerator(
@@ -139,11 +143,22 @@ public class Swagger302Generator {
     private ObjectNode paths;
 
 
-    public Swagger302Generator(String title, String description, String version, String basePath) {
-        this.title       = title;
-        this.description = description;
-        this.version     = version;
-        this.basePath    = basePath;
+    public Swagger302Generator(
+            String title, String description, String version, ArgumentsParseStrategy argumentsParseStrategy
+    ) {
+        this.title                  = title;
+        this.description            = description;
+        this.version                = version;
+        this.argumentsParseStrategy = argumentsParseStrategy;
+    }
+
+    /**
+     * @param path        relative path: {@code /demo/api}<br/>
+     *                    or full url: {@code http://localhost/demo/api}
+     * @param description server description.
+     */
+    public void addServer(String path, String description) {
+        serverInfos.add(new ServerInfo(path, description));
     }
 
     public String generateJson(Collection<ServiceInfo> services) {
@@ -208,10 +223,12 @@ public class Swagger302Generator {
      * }</pre>
      */
     private void addServers() {
-        final ArrayNode  servers = root.putArray("servers");
-        final ObjectNode server  = servers.addObject();
-        server.put("url", basePath);
-        server.put("description", "Demo local server");
+        final ArrayNode servers = root.putArray("servers");
+        for (ServerInfo serverInfo : serverInfos) {
+            final ObjectNode server = servers.addObject();
+            server.put("url", serverInfo.path);
+            server.put("description", serverInfo.description);
+        }
     }
 
     /**
@@ -440,11 +457,28 @@ public class Swagger302Generator {
         } else if (type instanceof ParameterizedType) {
             final ParameterizedType parameterizedType = (ParameterizedType) type;
             final String parameters = Arrays.stream(parameterizedType.getActualTypeArguments()).
-                    map(Swagger20Generator::getTypeSimpleName).
+                    map(Swagger302Generator::getTypeSimpleName).
                     collect(Collectors.joining(","));
             return getTypeSimpleName(parameterizedType.getRawType()) + "<" + parameters + ">";
         } else {
             return type.getTypeName();
+        }
+    }
+
+    private static class ServerInfo {
+        /**
+         * Relative path:<br/>
+         * {@code /demo/api}
+         * <p/>
+         * or full url:<br/>
+         * {@code http://localhost/demo/api}
+         */
+        final String path;
+        final String description;
+
+        ServerInfo(String path, String description) {
+            this.path        = path;
+            this.description = description;
         }
     }
 
