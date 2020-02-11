@@ -161,7 +161,19 @@ public class Swagger302Generator {
         serverInfos.add(new ServerInfo(path, description));
     }
 
-    public String generateJson(Collection<ServiceInfo> services) {
+    /** Generate swagger json. */
+    public String generateJsonString(Collection<ServiceInfo> services) {
+        final ObjectNode aRoot = generateJson(services);
+
+        try {
+            return objectMapper.writeValueAsString(aRoot);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Cannot create json", e);
+        }
+    }
+
+    /** Generate swagger json tree to be able to customize it (add authorization for example). */
+    public ObjectNode generateJson(Collection<ServiceInfo> services) {
         root = JsonNodeFactory.instance.objectNode();
         root.put("openapi", OPENAPI_VERSION);
 
@@ -189,11 +201,7 @@ public class Swagger302Generator {
 
         addPaths(services);
 
-        try {
-            return objectMapper.writeValueAsString(root);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Cannot create json", e);
-        }
+        return root;
     }
 
     /**
@@ -348,40 +356,21 @@ public class Swagger302Generator {
                 } else {
                     // multiple parameters
 
-                    // For example:
-                    //"requestBody" :{
-                    //  "required" :true,
-                    //  "content" :{
-                    //    "application/json" :{
-                    //      "schema" :{
-                    //        "type" :"object",
-                    //        "properties" :{
-                    //          "anInt1" :{
-                    //            "type" :"integer"
-                    //          },
-                    //          "aString1" :{
-                    //            "type" :"string"
-                    //          }
-                    //        }
-                    //      }
-                    //    }
-                    //  },
-                    //  "description" :"int **anInt1** *(some anInt1.)*\nString **aString1** *(some aString1.)*"
-                    //}
-                    final ObjectNode schema = applicationJson.putObject("schema");
-                    schema.put("type", "object");
-                    final ObjectNode properties = schema.putObject("properties");
-
-                    final Iterator<ParameterMeta> parameterMetasIterator = parameterMetas.iterator();
-                    for (Type type : parameterTypes) {
-                        final String name = parameterMetasIterator.next().name;
-                        properties.set(name, generateTypeSchema(type));
-                    }
+                    genMap(parameterTypes, parameterMetas, applicationJson);
                 }
                 break;
             }
-            case MAP:
-            case ARRAY:
+            case MAP: {
+                genMap(parameterTypes, parameterMetas, applicationJson);
+                break;
+            }
+            case ARRAY: {
+                final ObjectNode schema = applicationJson.putObject("schema");
+                schema.put("type", "array");
+                final ObjectNode items = schema.putObject("items");
+                items.put("type", "object");
+                break;
+            }
             default:
                 throw new IllegalArgumentException(
                         String.format("Unsupported ArgumentsParseStrategy value '%s'.", argumentsParseStrategy)
@@ -389,6 +378,39 @@ public class Swagger302Generator {
         }
 
         requestBody.put("description", getParametersDescription(parameterTypes, parameterMetas));
+    }
+
+    private void genMap(List<Type> parameterTypes, List<ParameterMeta> parameterMetas, ObjectNode applicationJson) {
+        // For example:
+        //"requestBody" :{
+        //  "required" :true,
+        //  "content" :{
+        //    "application/json" :{
+        //      "schema" :{
+        //        "type" :"object",
+        //        "properties" :{
+        //          "anInt1" :{
+        //            "type" :"integer"
+        //          },
+        //          "aString1" :{
+        //            "type" :"string"
+        //          }
+        //        }
+        //      }
+        //    }
+        //  },
+        //  "description" :"int **anInt1** *(some anInt1.)*\nString **aString1** *(some aString1.)*"
+        //}
+
+        final ObjectNode schema = applicationJson.putObject("schema");
+        schema.put("type", "object");
+        final ObjectNode properties = schema.putObject("properties");
+
+        final Iterator<ParameterMeta> parameterMetasIterator = parameterMetas.iterator();
+        for (Type type : parameterTypes) {
+            final String name = parameterMetasIterator.next().name;
+            properties.set(name, generateTypeSchema(type));
+        }
     }
 
     /**

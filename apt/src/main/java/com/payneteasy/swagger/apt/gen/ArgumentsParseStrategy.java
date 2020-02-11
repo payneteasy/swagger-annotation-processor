@@ -34,6 +34,9 @@ public enum ArgumentsParseStrategy {
      *   }
      * }
      * }</pre>
+     *
+     * <b>Note for multi parameter methods</b>: you should not rename service method parameters after swagger publish
+     * as you will not be able to invoke it.
      */
     MIXED,
     /**
@@ -72,6 +75,9 @@ public enum ArgumentsParseStrategy {
      *   }
      * }
      * }</pre>
+     *
+     * <b>Note</b> that you should not rename service method parameters after swagger publish
+     * as you will not be able to invoke it.
      */
     MAP,
     /**

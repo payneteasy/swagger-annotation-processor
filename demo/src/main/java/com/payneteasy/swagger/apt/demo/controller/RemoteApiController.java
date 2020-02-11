@@ -29,6 +29,8 @@ public class RemoteApiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemoteApiController.class);
 
+    private final ArgumentsParseStrategy argumentsParseStrategy = ArgumentsParseStrategy.MAP;
+
     /**
      * Map:
      * <ul>
@@ -46,7 +48,7 @@ public class RemoteApiController {
 
     RemoteApiController(BeanFactory context, String basePackage) throws ClassNotFoundException {
         services       = ServiceInfoSearcher.searchServices(context, basePackage);
-        serviceInvoker = new ServiceInvoker(services, ArgumentsParseStrategy.MIXED);
+        serviceInvoker = new ServiceInvoker(services, argumentsParseStrategy);
         LOG.info("Exported {} service. See /demo/api/doc/", services.size());
     }
 
@@ -54,10 +56,10 @@ public class RemoteApiController {
     public ModelAndView paynetUiJson(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
         final Swagger302Generator generator = new Swagger302Generator(
-                "demo services", "demo services description", "1.0", ArgumentsParseStrategy.MIXED
+                "demo services", "demo services description", "1.0", argumentsParseStrategy
         );
         generator.addServer("/demo/api", "Local demo server");
-        response.getWriter().println(generator.generateJson(services.values()));
+        response.getWriter().println(generator.generateJsonString(services.values()));
         return null;
     }
 
