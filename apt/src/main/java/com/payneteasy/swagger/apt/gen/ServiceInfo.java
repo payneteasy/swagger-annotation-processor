@@ -30,8 +30,9 @@ public class ServiceInfo {
         iface = aInterface;
         name  = aName;
 
+        final boolean interfaceMarked = iface.isAnnotationPresent(ExportToSwagger.class);
         for (Method method : iface.getMethods()) {
-            if (method.isAnnotationPresent(ExportToSwagger.class)) {
+            if (interfaceMarked || method.isAnnotationPresent(ExportToSwagger.class)) {
                 final MethodId methodId = ExportToSwaggerUtil.getMethodId(method.getAnnotation(ExportToSwagger.class), method.getName());
 
                 if (methods.containsKey(methodId)) {

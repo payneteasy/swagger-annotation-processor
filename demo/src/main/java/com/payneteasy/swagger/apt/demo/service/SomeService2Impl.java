@@ -12,4 +12,8 @@ public class SomeService2Impl implements ISomeService2 {
     public void empty() {
     }
 
+    @Override
+    public void singleArgument(int anInt) {
+    }
+
 }

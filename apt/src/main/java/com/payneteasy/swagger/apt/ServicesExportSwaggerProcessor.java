@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,55 +50,84 @@ public class ServicesExportSwaggerProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        final Set<? extends Element> methods = roundEnv.getElementsAnnotatedWith(ExportToSwagger.class);
+        final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(ExportToSwagger.class);
         if (DEBUG_LOG) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, (methods != null) ? "" + methods.size() : "null");
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, (elements != null) ? "" + elements.size() : "null");
         }
 
-        if (methods == null || methods.isEmpty()) {
+        if (elements == null || elements.isEmpty()) {
             return false;
         }
 
-        //filter out non-methods and method located not in interface
-        methods.removeIf(
-                method -> {
-                    if (method.getKind() != ElementKind.METHOD) {
-                        return true;
-                    }
-                    if (method.getEnclosingElement().getKind() != ElementKind.INTERFACE) {
-                        processingEnv.getMessager().printMessage(
-                                Diagnostic.Kind.MANDATORY_WARNING,
-                                String.format(
-                                        "%s: The method %s is ignored since it is located not in interface.",
-                                        ServicesExportSwaggerProcessor.class.getSimpleName(), method
-                                ),
-                                method
-                        );
-                        return true;
-                    }
-                    return false;
+        //collect methods and interfaces marked with @ExportToSwagger
+        final Set<Element> methods    = new LinkedHashSet<>();
+        final Set<Element> interfaces = new LinkedHashSet<>();
+        for (Element element : elements) {
+            if (element.getKind() == ElementKind.METHOD) {
+                if (element.getEnclosingElement().getKind() != ElementKind.INTERFACE) {
+                    printWarning(
+                            String.format("The method %s is ignored since it is located not in interface.", element),
+                            element
+                    );
+                    continue;
                 }
-        );
+                methods.add(element);
+            } else if (element.getKind() == ElementKind.INTERFACE) {
+                if (!element.getModifiers().contains(Modifier.PUBLIC)) {
+                    printWarning(
+                            String.format("The interface %s is ignored since it is not public.", element),
+                            element
+                    );
+                    continue;
+                }
+                if (!ElementUtil.containsAtLeastOneMethod(element.getEnclosedElements())) {
+                    printWarning(
+                            String.format("The interface %s is ignored since it does not contain any methods.", element),
+                            element
+                    );
+                    continue;
+                }
+                interfaces.add(element);
+            } else {
+                printWarning(
+                        String.format("The element %s is ignored.", element),
+                        element
+                );
+            }
+        }
 
-        //collect javadocs of the services
-        //map: service class info -> class element
-        final Map<ClassInfo, Element> serviceElementsMap = new HashMap<>();
+        //collect methods interfaces
+        final Set<Element> methodsInterfaces = new HashSet<>();
         for (Element method : methods) {
-            final Element aClass   = method.getEnclosingElement();
-            final Element aPackage = aClass.getEnclosingElement();
+            methodsInterfaces.add(method.getEnclosingElement());
+        }
 
-            final String className   = aClass.getSimpleName().toString();
-            final String packageName = aPackage.toString();
+        //collect interfaces methods
+        final Set<Element> interfacesMethods = new HashSet<>();
+        for (Element anInterface : interfaces) {
+            interfacesMethods.addAll(ElementUtil.methods(anInterface.getEnclosedElements()));
+        }
 
-            serviceElementsMap.putIfAbsent(new ClassInfo(packageName, className), aClass);
+        //combine interfaces and methods
+        interfaces.addAll(methodsInterfaces);
+        methods.addAll(interfacesMethods);
+
+        //collect javadocs of the services (interfaces)
+        //map: service class info -> interface element
+        final Map<ClassInfo, Element> serviceElementsMap = new HashMap<>();
+        for (Element anInterface : interfaces) {
+            final String packageName   = anInterface.getEnclosingElement().toString();
+            final String interfaceName = anInterface.getSimpleName().toString();
+
+            serviceElementsMap.putIfAbsent(new ClassInfo(packageName, interfaceName), anInterface);
         }
         //map: service class info -> service class javadoc (raw)
         final Map<ClassInfo, String> serviceJavadocsMap = new HashMap<>();
         for (Map.Entry<ClassInfo, Element> entry : serviceElementsMap.entrySet()) {
-            final ClassInfo classInfo = entry.getKey();
-            final Element   aClass    = entry.getValue();
+            final ClassInfo classInfo   = entry.getKey();
+            final Element   anInterface = entry.getValue();
 
-            final String javadoc = StringUtils.trimToEmpty(processingEnv.getElementUtils().getDocComment(aClass));
+            final String javadoc = StringUtils.trimToEmpty(getDocComment(anInterface));
             serviceJavadocsMap.put(classInfo, javadoc);
         }
 
@@ -204,6 +234,14 @@ public class ServicesExportSwaggerProcessor extends AbstractProcessor {
         return false;
     }
 
+    private void printWarning(String message, Element element) {
+        processingEnv.getMessager().printMessage(
+                Diagnostic.Kind.MANDATORY_WARNING,
+                ServicesExportSwaggerProcessor.class.getSimpleName() + ": " + message,
+                element
+        );
+    }
+
     private MethodInfo toMethodInfo(ExecutableElement method) {
         final Element aClass   = method.getEnclosingElement();
         final Element aPackage = aClass.getEnclosingElement();
@@ -212,7 +250,7 @@ public class ServicesExportSwaggerProcessor extends AbstractProcessor {
         final MethodId methodId          = ExportToSwaggerUtil.getMethodId(method.getAnnotation(ExportToSwagger.class), methodName);
         final String   className         = aClass.getSimpleName().toString();
         final String   packageName       = aPackage.toString();
-        final String   fullMethodJavadoc = StringUtils.trimToEmpty(processingEnv.getElementUtils().getDocComment(method));
+        final String   fullMethodJavadoc = StringUtils.trimToEmpty(getDocComment(method));
 
         final MethodJavadocInfo methodJavadocInfo;
         try {
@@ -245,6 +283,10 @@ public class ServicesExportSwaggerProcessor extends AbstractProcessor {
         }
 
         return methodInfo;
+    }
+
+    private String getDocComment(Element element) {
+        return processingEnv.getElementUtils().getDocComment(element);
     }
 
     private Map<MethodId, Integer> checkServiceMethodsUnique(List<MethodInfo> classMethodInfos) {

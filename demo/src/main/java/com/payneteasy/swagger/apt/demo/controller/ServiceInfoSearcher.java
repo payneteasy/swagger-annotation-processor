@@ -62,13 +62,16 @@ public class ServiceInfoSearcher {
     }
 
     private static boolean isServiceForExport(Class<?> iface) {
+        if (iface.isAnnotationPresent(ExportToSwagger.class)) {
+            return true;
+        }
         for (Method method : iface.getMethods()) {
             if (method.isAnnotationPresent(ExportToSwagger.class)) {
                 return true;
             }
         }
         LOG.debug(
-                "Service {} has no method marked with @{} annotation",
+                "Service {} is not marked with @{} annotation and it has no methods marked",
                 iface.getSimpleName(), ExportToSwagger.class.getSimpleName()
         );
         return false;

@@ -3,15 +3,13 @@ package com.payneteasy.swagger.apt.demo.service;
 import com.payneteasy.swagger.apt.ExportToSwagger;
 
 /**
+ * This interface will be ignored, because it is not public.
+ *
  * @author dvponomarev, 27.09.2018
  */
 @ExportToSwagger
-public interface ISomeService2 {
+interface ISomeService4 {
 
-    /** Empty method with duplicate annotation. */
-    @ExportToSwagger
-    void empty();
-
-    void singleArgument(int anInt);
+    void someMethod();
 
 }

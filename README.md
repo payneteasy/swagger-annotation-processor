@@ -31,14 +31,26 @@ Library for swagger REST services compile time generation.
       </configuration>
     </plugin>
     ```
-3. Mark service interface methods you want to export to Swagger with `@ExportToSwagger` annotation.  
-    Note that only services with interfaces are supported currently.
+3. Mark service interfaces and/or its methods you want to export to Swagger with `@ExportToSwagger` annotation.  
+    Note that only services with interfaces are supported currently.  
+    
+    Method marked:
     ```java
     public interface IService {
         @ExportToSwagger
         int doSomething(String str);
     }
+    ```
+    Or interface marked:
+    ```
+    @ExportToSwagger
+    public interface IService {
+        int doSomething(String str);
+    }
+    ```
     
+    Service implementation:
+    ```
     public class ServiceImpl implements IService {
         @Override
         public int doSomething(String str) {
@@ -46,7 +58,18 @@ Library for swagger REST services compile time generation.
         }
     }
     ```
-4. Implement your controller(s) that uses `SwaggerGenerator` and `ServiceInvoker`. See demo.
+4. By default the method name becomes the last path part of the REST method, 
+to override it specify @ExportToSwagger value on service method:
+    ```
+    public interface IService {
+        @ExportToSwagger("doSomethingInt")
+        int doSomething(int anInt);
+        
+        @ExportToSwagger("doSomethingString")
+        int doSomething(String str);
+    }
+    ```
+5. Implement your controller(s) that uses `Swagger302Generator` and `ServiceInvoker`. See demo.
 
 ## Build
 

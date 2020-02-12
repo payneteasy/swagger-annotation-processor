@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author dvponomarev, 27.09.2018
  */
-interface ISomeService {
+public interface ISomeService {
 
     @ExportToSwagger
     void empty();

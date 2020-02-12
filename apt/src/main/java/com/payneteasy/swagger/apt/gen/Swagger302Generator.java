@@ -28,12 +28,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Swagger 3.0.2 (OpenAPI 3.0.2).<br/>
- * Swagger 3.0.2 json specification: https://swagger.io/specification/.
+ * Swagger 3.0.2 (OpenAPI 3.0.2) json generator.<br/>
+ * Swagger 3.0.2 json specification: https://swagger.io/specification/.<br/>
+ * Just in case - swagger 2.0 json specification: https://swagger.io/specification/v2/.
  * <p/>
  * <b>Model classes with the same names and different packages are not supported!</b>
  * <p/>
- * Not thread-safe.
+ * Not thread-safe.<br/>
+ * Class instance should be used only once.
  * <p/>
  * Sample json:
  * <pre>{@code
