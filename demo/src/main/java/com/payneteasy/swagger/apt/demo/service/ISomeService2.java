@@ -1,6 +1,6 @@
 package com.payneteasy.swagger.apt.demo.service;
 
-import com.payneteasy.swagger.apt.ExportToSwagger;
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 
 /**
  * @author dvponomarev, 27.09.2018

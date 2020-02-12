@@ -1,5 +1,6 @@
 package com.payneteasy.swagger.apt;
 
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import com.payneteasy.swagger.apt.model.ComplexModel;
 import com.payneteasy.swagger.apt.model.EnumModel;
 

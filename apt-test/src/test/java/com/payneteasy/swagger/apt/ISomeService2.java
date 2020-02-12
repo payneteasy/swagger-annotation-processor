@@ -1,5 +1,7 @@
 package com.payneteasy.swagger.apt;
 
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
+
 /**
  * @author dvponomarev, 27.09.2018
  */

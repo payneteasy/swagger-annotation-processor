@@ -34,7 +34,7 @@ public class ServicesExportSwaggerProcessorTest {
                     .compile(JavaFileObjects.forSourceString(
                             "com.payneteasy.swagger.apt.ISomeDynamicService3",
                             "package com.payneteasy.swagger.apt;\n" +
-                            "import com.payneteasy.swagger.apt.ExportToSwagger;\n" +
+                            "import com.payneteasy.swagger.apt.annotation.ExportToSwagger;\n" +
                             "interface ISomeService3 {\n" +
                             "    @ExportToSwagger\n" +
                             "    void methodA(int i);\n" +
@@ -50,7 +50,7 @@ public class ServicesExportSwaggerProcessorTest {
                         .compile(JavaFileObjects.forSourceString(
                                 "com.payneteasy.swagger.apt.ISomeDynamicService3",
                                 "package com.payneteasy.swagger.apt;\n" +
-                                "import com.payneteasy.swagger.apt.ExportToSwagger;\n" +
+                                "import com.payneteasy.swagger.apt.annotation.ExportToSwagger;\n" +
                                 "interface ISomeService3 {\n" +
                                 "    @ExportToSwagger\n" +
                                 "    void methodA(int i);\n" +
@@ -69,7 +69,7 @@ public class ServicesExportSwaggerProcessorTest {
                     .compile(JavaFileObjects.forSourceString(
                             "com.payneteasy.swagger.apt.ISomeDynamicService3",
                             "package com.payneteasy.swagger.apt;\n" +
-                            "import com.payneteasy.swagger.apt.ExportToSwagger;\n" +
+                            "import com.payneteasy.swagger.apt.annotation.ExportToSwagger;\n" +
                             "interface ISomeService3 {\n" +
                             "    @ExportToSwagger\n" +
                             "    void methodA(int i);\n" +

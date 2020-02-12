@@ -1,5 +1,6 @@
 package com.payneteasy.swagger.apt;
 
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import com.payneteasy.swagger.apt.javadoc.JavadocParser;
 import com.payneteasy.swagger.apt.javadoc.MethodJavadocInfo;
 import com.squareup.javapoet.ClassName;
@@ -41,7 +42,7 @@ import java.util.stream.Collectors;
  *
  * @author dvponomarev, 27.09.2018
  */
-@SupportedAnnotationTypes("com.payneteasy.swagger.apt.ExportToSwagger")
+@SupportedAnnotationTypes("com.payneteasy.swagger.apt.annotation.ExportToSwagger")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ServicesExportSwaggerProcessor extends AbstractProcessor {
 

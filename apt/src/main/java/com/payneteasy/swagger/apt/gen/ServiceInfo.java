@@ -1,6 +1,6 @@
 package com.payneteasy.swagger.apt.gen;
 
-import com.payneteasy.swagger.apt.ExportToSwagger;
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import com.payneteasy.swagger.apt.ExportToSwaggerUtil;
 import com.payneteasy.swagger.apt.MetaClassUtil;
 import com.payneteasy.swagger.apt.MethodId;

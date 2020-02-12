@@ -1,5 +1,7 @@
 package com.payneteasy.swagger.apt;
 
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
+
 /**
  * This service will not be processed, interface is required.
  *

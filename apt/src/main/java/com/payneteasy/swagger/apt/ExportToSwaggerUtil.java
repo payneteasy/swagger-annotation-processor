@@ -1,5 +1,6 @@
 package com.payneteasy.swagger.apt;
 
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

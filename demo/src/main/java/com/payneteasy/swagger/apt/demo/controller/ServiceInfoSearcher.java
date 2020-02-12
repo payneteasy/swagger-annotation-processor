@@ -1,6 +1,6 @@
 package com.payneteasy.swagger.apt.demo.controller;
 
-import com.payneteasy.swagger.apt.ExportToSwagger;
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import com.payneteasy.swagger.apt.gen.ServiceInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

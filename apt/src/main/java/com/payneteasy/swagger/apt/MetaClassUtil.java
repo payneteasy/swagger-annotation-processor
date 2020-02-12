@@ -1,5 +1,6 @@
 package com.payneteasy.swagger.apt;
 
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;

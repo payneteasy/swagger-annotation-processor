@@ -1,6 +1,6 @@
 package com.payneteasy.swagger.apt.demo.service;
 
-import com.payneteasy.swagger.apt.ExportToSwagger;
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 
 /**
  * This interface will be ignored, because it is not public.

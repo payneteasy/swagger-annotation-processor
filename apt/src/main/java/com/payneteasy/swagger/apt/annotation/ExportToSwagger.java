@@ -1,4 +1,4 @@
-package com.payneteasy.swagger.apt;
+package com.payneteasy.swagger.apt.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,8 +23,6 @@ public @interface ExportToSwagger {
      * Usually you should not override default value but this is useful in case of methods overloading.
      * <p/>
      * {@code value()} specified on service interface is ignored.
-     *
-     * @see MethodId
      */
     String value() default "";
 
