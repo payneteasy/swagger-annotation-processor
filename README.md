@@ -1,6 +1,10 @@
 # swagger-annotation-processor
 
-Library for swagger REST services compile time generation.
+Library for Swagger REST services generation by java services marked with special annotations.
+REST services are generated both in compile time(annotation processor) and in runtime.
+
+Supports Swagger 3.0.2 (OpenAPI 3.0.2).  
+Swagger 3.0.2 json specification: https://swagger.io/specification/.
 
 ## Usage
 
