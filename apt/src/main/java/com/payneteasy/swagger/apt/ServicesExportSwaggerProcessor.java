@@ -1,6 +1,7 @@
 package com.payneteasy.swagger.apt;
 
 import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
+import com.payneteasy.swagger.apt.annotation.MethodParam;
 import com.payneteasy.swagger.apt.javadoc.JavadocParser;
 import com.payneteasy.swagger.apt.javadoc.MethodJavadocInfo;
 import com.squareup.javapoet.ClassName;
@@ -20,6 +21,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
@@ -264,18 +266,41 @@ public class ServicesExportSwaggerProcessor extends AbstractProcessor {
         // javax.lang.model.element.VariableElement.getSimpleName().toString()
         //
         //see also https://community.oracle.com/blogs/emcmanus/2006/06/13/using-annotation-processors-save-method-parameter-names
+        final List<ParameterInfo> parameterInfos           = new ArrayList<>();
+        final Set<String>         parameterNames           = new HashSet<>();
+        final Set<String>         duplicatedParameterNames = new HashSet<>();
+        for (VariableElement param : method.getParameters()) {
+            final MethodParam annotation = param.getAnnotation(MethodParam.class);
+
+            final String paramName;
+            if (annotation != null) {
+                paramName = annotation.value();
+            } else {
+                paramName = param.getSimpleName().toString();
+            }
+            parameterInfos.add(
+                    new ParameterInfo(
+                            paramName, param.asType(),
+                            Objects.toString(methodJavadocInfo.parametersJavadoc.get(paramName), "")
+                    )
+            );
+            final boolean doesNotContain = parameterNames.add(paramName);
+            if (!doesNotContain) {
+                duplicatedParameterNames.add(paramName);
+            }
+        }
+        if (!duplicatedParameterNames.isEmpty()) {
+            final String message = String.format(
+                    "The method %s defines following duplicated parameter names %s.",
+                    method, String.join(",", duplicatedParameterNames)
+            );
+            printWarning(message, method);
+            throw new IllegalStateException(message);
+        }
+
         final MethodInfo methodInfo = new MethodInfo(
                 new ClassInfo(packageName, className), methodId, methodName, methodJavadocInfo.methodJavadoc,
-                method.getParameters().stream().map(
-                        param -> {
-                            final String paramName = param.getSimpleName().toString();
-                            return new ParameterInfo(
-                                    paramName, param.asType(),
-                                    Objects.toString(methodJavadocInfo.parametersJavadoc.get(paramName), "")
-                            );
-                        }
-                ).collect(Collectors.toList()),
-                methodJavadocInfo.returnJavadoc
+                parameterInfos, methodJavadocInfo.returnJavadoc
         );
         if (DEBUG_LOG) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "className = " + className);

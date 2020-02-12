@@ -9,7 +9,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ParameterMeta {
 
-    /** Method parameter name as it declared in source code. */
+    /**
+     * Method parameter name as it declared in source code or specified with
+     * {@link com.payneteasy.swagger.apt.annotation.MethodParam @MethodParam} annotation.
+     */
     @NotNull
     public final String name;
     /** Method parameter javadoc got from method javadoc. */

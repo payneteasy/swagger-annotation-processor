@@ -366,13 +366,6 @@ public class Swagger302Generator {
                 genMap(parameterTypes, parameterMetas, applicationJson);
                 break;
             }
-            case ARRAY: {
-                final ObjectNode schema = applicationJson.putObject("schema");
-                schema.put("type", "array");
-                final ObjectNode items = schema.putObject("items");
-                items.put("type", "object");
-                break;
-            }
             default:
                 throw new IllegalArgumentException(
                         String.format("Unsupported ArgumentsParseStrategy value '%s'.", argumentsParseStrategy)

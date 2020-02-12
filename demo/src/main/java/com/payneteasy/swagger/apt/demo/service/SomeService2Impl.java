@@ -16,4 +16,8 @@ public class SomeService2Impl implements ISomeService2 {
     public void singleArgument(int anInt) {
     }
 
+    @Override
+    public void parametersNamesOverrides(int anInt, String aString) {
+    }
+
 }

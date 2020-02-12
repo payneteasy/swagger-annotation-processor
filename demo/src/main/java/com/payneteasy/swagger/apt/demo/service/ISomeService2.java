@@ -1,6 +1,7 @@
 package com.payneteasy.swagger.apt.demo.service;
 
 import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
+import com.payneteasy.swagger.apt.annotation.MethodParam;
 
 /**
  * @author dvponomarev, 27.09.2018
@@ -13,5 +14,7 @@ public interface ISomeService2 {
     void empty();
 
     void singleArgument(int anInt);
+
+    void parametersNamesOverrides(@MethodParam("anInt2") int anInt, @MethodParam("aString2") String aString);
 
 }

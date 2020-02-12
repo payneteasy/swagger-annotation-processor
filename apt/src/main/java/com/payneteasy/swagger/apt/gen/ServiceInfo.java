@@ -1,10 +1,10 @@
 package com.payneteasy.swagger.apt.gen;
 
-import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import com.payneteasy.swagger.apt.ExportToSwaggerUtil;
 import com.payneteasy.swagger.apt.MetaClassUtil;
 import com.payneteasy.swagger.apt.MethodId;
 import com.payneteasy.swagger.apt.MethodMeta;
+import com.payneteasy.swagger.apt.annotation.ExportToSwagger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;

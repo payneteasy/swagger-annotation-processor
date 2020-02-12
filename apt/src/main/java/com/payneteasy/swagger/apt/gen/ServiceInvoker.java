@@ -2,7 +2,6 @@ package com.payneteasy.swagger.apt.gen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -116,9 +115,6 @@ public class ServiceInvoker {
                 }
             case MAP:
                 return parseArgumentsAsMap(json, parameterMetas, parameterTypes);
-            case ARRAY:
-                //todo not tested
-                return parseArgumentsAsArray(json, parameterTypes);
             default:
                 throw new IllegalArgumentException(
                         String.format("Unsupported ArgumentsParseStrategy value '%s'.", argumentsParseStrategy)
@@ -149,27 +145,6 @@ public class ServiceInvoker {
             arguments.add(gson.fromJson(argumentElement, type));
         }
 
-        return arguments.toArray();
-    }
-
-    @NotNull
-    private Object[] parseArgumentsAsArray(@NotNull String json, @NotNull List<Type> parameterTypes) {
-        final JsonArray array = JsonParser.parseString(json).getAsJsonArray();
-        if (array.size() != parameterTypes.size()) {
-            throw new IllegalStateException(
-                    String.format(
-                            "json arguments array size=%d, parameterTypes.size=%d, they should be the same.",
-                            array.size(), parameterTypes.size()
-                    )
-            );
-        }
-
-        final List<?> arguments = new ArrayList<>();
-        for (int i = 0; i < parameterTypes.size(); i++) {
-            final Type        type    = parameterTypes.get(i);
-            final JsonElement element = array.get(i);
-            arguments.add(gson.fromJson(element, type));
-        }
         return arguments.toArray();
     }
 

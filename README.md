@@ -42,7 +42,7 @@ Library for swagger REST services compile time generation.
     }
     ```
     Or interface marked:
-    ```
+    ```java
     @ExportToSwagger
     public interface IService {
         int doSomething(String str);
@@ -50,7 +50,7 @@ Library for swagger REST services compile time generation.
     ```
     
     Service implementation:
-    ```
+    ```java
     public class ServiceImpl implements IService {
         @Override
         public int doSomething(String str) {
@@ -59,8 +59,8 @@ Library for swagger REST services compile time generation.
     }
     ```
 4. By default the method name becomes the last path part of the REST method, 
-to override it specify @ExportToSwagger value on service method:
-    ```
+to override it specify `@ExportToSwagger` `value` on service method:
+    ```java
     public interface IService {
         @ExportToSwagger("doSomethingInt")
         int doSomething(int anInt);
@@ -69,7 +69,15 @@ to override it specify @ExportToSwagger value on service method:
         int doSomething(String str);
     }
     ```
-5. Implement your controller(s) that uses `Swagger302Generator` and `ServiceInvoker`. See demo.
+5. For service survive on service method parameters rename use `@MethodParam` annotation on method parameters:
+    ```java
+    @ExportToSwagger
+    public interface IService {
+        void doSomething(@MethodParam("anInt2") int anInt);
+        void doSomethingElse(@MethodParam("anInt2") int anInt, @MethodParam("aString2") String aString);
+    }
+    ```
+6. Implement your controller(s) that uses `Swagger302Generator` and `ServiceInvoker`. See demo.
 
 ## Build
 

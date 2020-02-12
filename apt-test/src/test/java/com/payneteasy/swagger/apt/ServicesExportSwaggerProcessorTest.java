@@ -81,4 +81,63 @@ public class ServicesExportSwaggerProcessorTest {
         }
     }
 
+    @Test
+    public void testDuplicateMethodParameterNames() {
+        {
+            Compilation compilation = Compiler.javac()
+                    .withProcessors(new ServicesExportSwaggerProcessor())
+                    .compile(JavaFileObjects.forSourceString(
+                            "com.payneteasy.swagger.apt.ISomeDynamicService3",
+                            "package com.payneteasy.swagger.apt;\n" +
+                            "import com.payneteasy.swagger.apt.annotation.ExportToSwagger;\n" +
+                            "import com.payneteasy.swagger.apt.annotation.MethodParam;\n" +
+                            "interface ISomeService3 {\n" +
+                            "    @ExportToSwagger\n" +
+                            "    void methodA(@MethodParam(\"a\") int i, @MethodParam(\"b\") String s);\n" +
+                            "}"
+                    ));
+            CompilationSubject.assertThat(compilation).succeeded();
+        }
+        {
+            try {
+                //noinspection ResultOfMethodCallIgnored
+                Compiler.javac()
+                        .withProcessors(new ServicesExportSwaggerProcessor())
+                        .compile(JavaFileObjects.forSourceString(
+                                "com.payneteasy.swagger.apt.ISomeDynamicService3",
+                                "package com.payneteasy.swagger.apt;\n" +
+                                "import com.payneteasy.swagger.apt.annotation.ExportToSwagger;\n" +
+                                "import com.payneteasy.swagger.apt.annotation.MethodParam;\n" +
+                                "interface ISomeService3 {\n" +
+                                "    @ExportToSwagger\n" +
+                                "    void methodA(@MethodParam(\"a\") int i, @MethodParam(\"a\") String s);\n" +
+                                "}"
+                        ));
+                fail();
+            } catch (RuntimeException e) {
+                assertEquals(e.getCause().getClass(), IllegalStateException.class);
+            }
+        }
+        {
+            try {
+                //noinspection ResultOfMethodCallIgnored
+                Compiler.javac()
+                        .withProcessors(new ServicesExportSwaggerProcessor())
+                        .compile(JavaFileObjects.forSourceString(
+                                "com.payneteasy.swagger.apt.ISomeDynamicService3",
+                                "package com.payneteasy.swagger.apt;\n" +
+                                "import com.payneteasy.swagger.apt.annotation.ExportToSwagger;\n" +
+                                "import com.payneteasy.swagger.apt.annotation.MethodParam;\n" +
+                                "interface ISomeService3 {\n" +
+                                "    @ExportToSwagger\n" +
+                                "    void methodA(@MethodParam(\"s\") int i, String s);\n" +
+                                "}"
+                        ));
+                fail();
+            } catch (RuntimeException e) {
+                assertEquals(e.getCause().getClass(), IllegalStateException.class);
+            }
+        }
+    }
+
 }
