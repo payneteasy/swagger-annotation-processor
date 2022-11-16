@@ -16,7 +16,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <jackson2.version>2.10.2</jackson2.version>
+    <jackson2.version>2.12.7.1</jackson2.version>
     <slf4j.version>1.7.30</slf4j.version>
     <dependency-check-maven.version>5.3.0</dependency-check-maven.version>
   </properties>
